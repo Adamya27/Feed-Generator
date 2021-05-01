@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -31,11 +32,11 @@ public class FeedController {
     @GetMapping
     public ResponseEntity<Object> getFeedData(@RequestParam(defaultValue = "0") Integer offset){
         List<FeedItemDao> list = feedRepository.findAll();
+        Collections.sort(list, Collections.reverseOrder());
         Integer lastItemIndex = offset + feedSize < list.size() ? offset + feedSize : list.size();
         List<FeedItemDao> listToBeSent = offset < lastItemIndex ? list.subList(offset, lastItemIndex ) : new ArrayList<>();
         HashMap<String,Object> response = new HashMap<>();
         Boolean nextPage = list.size() > offset + feedSize;
-
         response.put("size", listToBeSent.size());
         response.put("nextPage",nextPage);
         response.put("items", listToBeSent);
@@ -48,7 +49,6 @@ public class FeedController {
 
         TextCriteria textCriteria = TextCriteria.forDefaultLanguage().matchingAny(query);
         List<FeedItemDao> searchResult = feedRepository.findAllBy(textCriteria);
-
         HashMap<String,Object> response = new HashMap<>();
         response.put("size", searchResult.size());
         response.put("searchQuery", query);

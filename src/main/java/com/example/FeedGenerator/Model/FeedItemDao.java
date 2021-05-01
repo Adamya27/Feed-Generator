@@ -13,7 +13,7 @@ import java.util.Date;
 
 @Document
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FeedItemDao{
+public class FeedItemDao implements Comparable<FeedItemDao>{
 
     @Id
     @TextIndexed(weight = 2)
@@ -22,9 +22,7 @@ public class FeedItemDao{
     private String description;
     private String link;
     private String pubDate;
-
-
-
+    private Date date;
 
 
     public FeedItemDao(String title, String description, String link, String pubDate) {
@@ -35,6 +33,14 @@ public class FeedItemDao{
     }
 
     public FeedItemDao() {
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public String getTitle() {
@@ -70,4 +76,8 @@ public class FeedItemDao{
 
     }
 
+    @Override
+    public int compareTo(FeedItemDao feedItemDao) {
+        return this.getDate().compareTo(feedItemDao.getDate());
+    }
 }
